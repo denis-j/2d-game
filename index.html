@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2D Game</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #1a1a2e;
+        font-family: Arial, sans-serif;
+      }
+
+      #game-container {
+        text-align: center;
+      }
+
+      canvas {
+        border: 3px solid #0f3460;
+        background: #16213e;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+      }
+
+      #info {
+        color: #e94560;
+        margin-top: 20px;
+        font-size: 14px;
+      }
+
+      h1 {
+        color: #0ea5e9;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <h1>2D Game</h1>
+      <canvas id="gameCanvas"></canvas>
+      <div id="info">
+        Steuerung: Pfeiltasten oder WASD | Leertaste zum Springen
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
