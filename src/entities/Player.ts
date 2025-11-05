@@ -121,35 +121,47 @@ export class Player {
     // Determine animation direction
     let animDirection = '';
     const isMoving = velocityX !== 0 || velocityY !== 0;
+    let flipX = false;
 
     if (isMoving) {
       // Update last direction based on actual movement
       // Prioritize horizontal over vertical for diagonal movement
       if (velocityX < 0 && Math.abs(velocityX) >= Math.abs(velocityY)) {
-        animDirection = 'left';
+        animDirection = 'right'; // Use right sprite, but flip it
+        flipX = true;
         this.lastDirection = { x: -1, y: 0 };
       } else if (velocityX > 0 && Math.abs(velocityX) >= Math.abs(velocityY)) {
         animDirection = 'right';
+        flipX = false;
         this.lastDirection = { x: 1, y: 0 };
       } else if (velocityY < 0) {
         animDirection = 'up';
+        flipX = false;
         this.lastDirection = { x: 0, y: -1 };
       } else if (velocityY > 0) {
         animDirection = 'down';
+        flipX = false;
         this.lastDirection = { x: 0, y: 1 };
       }
     } else {
       // Not moving, use last direction for idle
       if (this.lastDirection.x < 0) {
-        animDirection = 'left';
+        animDirection = 'right'; // Use right sprite, but flip it
+        flipX = true;
       } else if (this.lastDirection.x > 0) {
         animDirection = 'right';
+        flipX = false;
       } else if (this.lastDirection.y < 0) {
         animDirection = 'up';
+        flipX = false;
       } else {
         animDirection = 'down';
+        flipX = false;
       }
     }
+
+    // Update sprite flip
+    this.sprite.setFlipX(flipX);
 
     // Update animation
     if (!this.isAttacking && animDirection) {

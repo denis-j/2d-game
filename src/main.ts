@@ -8,7 +8,7 @@ const config: Phaser.Types.Core.GameConfig = {
   parent: 'game-container',
   pixelArt: true,
   scale: {
-    mode: Phaser.Scale.RESIZE,
+    mode: Phaser.Scale.NONE,
     width: window.innerWidth,
     height: window.innerHeight
   },
@@ -23,6 +23,11 @@ const config: Phaser.Types.Core.GameConfig = {
   backgroundColor: '#000000'
 };
 
-new Phaser.Game(config);
+const game = new Phaser.Game(config);
+
+// Handle window resize to keep fullscreen
+window.addEventListener('resize', () => {
+  game.scale.resize(window.innerWidth, window.innerHeight);
+});
 
 console.log('Knight\'s Descent: Escape from the Depths - Starting...');
