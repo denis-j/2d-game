@@ -99,18 +99,14 @@ export class Player {
 
     if (input.left) {
       velocityX = -this.speed;
-      this.lastDirection = { x: -1, y: 0 };
     } else if (input.right) {
       velocityX = this.speed;
-      this.lastDirection = { x: 1, y: 0 };
     }
 
     if (input.up) {
       velocityY = -this.speed;
-      this.lastDirection = { x: 0, y: -1 };
     } else if (input.down) {
       velocityY = this.speed;
-      this.lastDirection = { x: 0, y: 1 };
     }
 
     // Normalize diagonal movement
@@ -119,13 +115,23 @@ export class Player {
       velocityY *= 0.707;
     }
 
+    // Update last direction based on actual movement
+    if (velocityX !== 0 || velocityY !== 0) {
+      // Prioritize horizontal movement for animation direction
+      if (Math.abs(velocityX) > Math.abs(velocityY)) {
+        this.lastDirection = { x: velocityX > 0 ? 1 : -1, y: 0 };
+      } else {
+        this.lastDirection = { x: 0, y: velocityY > 0 ? 1 : -1 };
+      }
+    }
+
     // Set velocity
     this.sprite.setVelocity(velocityX, velocityY);
 
     // Update animation
     if (!this.isAttacking) {
       if (velocityX === 0 && velocityY === 0) {
-        // Idle
+        // Idle - use last direction
         if (this.lastDirection.x < 0) {
           this.sprite.play('knight_idle_left', true);
         } else if (this.lastDirection.x > 0) {
@@ -136,14 +142,14 @@ export class Player {
           this.sprite.play('knight_idle_down', true);
         }
       } else {
-        // Walking
-        if (input.left) {
+        // Walking - use actual current direction
+        if (this.lastDirection.x < 0) {
           this.sprite.play('knight_walk_left', true);
-        } else if (input.right) {
+        } else if (this.lastDirection.x > 0) {
           this.sprite.play('knight_walk_right', true);
-        } else if (input.up) {
+        } else if (this.lastDirection.y < 0) {
           this.sprite.play('knight_walk_up', true);
-        } else if (input.down) {
+        } else {
           this.sprite.play('knight_walk_down', true);
         }
       }
