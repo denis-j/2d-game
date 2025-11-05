@@ -12,7 +12,15 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.8"
   },
-  "keywords": ["game", "2d", "typescript", "canvas"],
+  "keywords": [
+    "game",
+    "2d",
+    "typescript",
+    "canvas"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "phaser": "^3.90.0"
+  }
 }

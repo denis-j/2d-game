@@ -1,12 +1,25 @@
-import { Game } from './game/Game';
+import Phaser from 'phaser';
+import { BootScene } from './scenes/BootScene';
+import { PreloadScene } from './scenes/PreloadScene';
+import { GameScene } from './scenes/GameScene';
 
-const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+const config: Phaser.Types.Core.GameConfig = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  parent: 'game-container',
+  pixelArt: true,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { x: 0, y: 0 },
+      debug: false
+    }
+  },
+  scene: [BootScene, PreloadScene, GameScene],
+  backgroundColor: '#000000'
+};
 
-if (!canvas) {
-  throw new Error('Canvas element not found');
-}
+new Phaser.Game(config);
 
-const game = new Game(canvas);
-game.start();
-
-console.log('Game started!');
+console.log('Knight\'s Descent: Escape from the Depths - Starting...');
