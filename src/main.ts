@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { GameScene } from './scenes/GameScene';
+import { GameOverScene } from './scenes/GameOverScene';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -19,7 +20,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: false
     }
   },
-  scene: [BootScene, PreloadScene, GameScene],
+  scene: [BootScene, PreloadScene, GameScene, GameOverScene],
   backgroundColor: '#000000'
 };
 

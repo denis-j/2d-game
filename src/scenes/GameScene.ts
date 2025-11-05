@@ -52,7 +52,18 @@ export class GameScene extends Phaser.Scene {
     // Create HUD
     this.hud = new GameHUD(this);
     this.hud.updateHP(this.player.getHp(), this.player.getMaxHp());
+    this.hud.updateLives(this.player.getLives());
     this.hud.setLevel(Level5Data.levelNumber, Level5Data.name);
+
+    // Setup player events
+    this.events.on('player-game-over', () => {
+      this.scene.start('GameOverScene');
+    });
+
+    this.events.on('player-respawned', () => {
+      this.hud.updateLives(this.player.getLives());
+      this.hud.updateHP(this.player.getHp(), this.player.getMaxHp());
+    });
 
     // Setup input
     this.cursors = this.input.keyboard!.createCursorKeys();

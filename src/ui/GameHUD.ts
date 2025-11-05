@@ -7,6 +7,7 @@ export class GameHUD {
   private hpText!: Phaser.GameObjects.Text;
   private coinText!: Phaser.GameObjects.Text;
   private levelText!: Phaser.GameObjects.Text;
+  private livesText!: Phaser.GameObjects.Text;
 
   private coins: number = 0;
 
@@ -60,6 +61,16 @@ export class GameHUD {
     this.levelText.setOrigin(0.5, 0);
     this.levelText.setScrollFactor(0);
     this.levelText.setDepth(102);
+
+    // Lives counter
+    this.livesText = this.scene.add.text(20, 50, 'Lives: 3', {
+      font: '14px monospace',
+      color: '#ff6666',
+      stroke: '#000000',
+      strokeThickness: 3
+    });
+    this.livesText.setScrollFactor(0);
+    this.livesText.setDepth(102);
   }
 
   public updateHP(currentHp: number, maxHp: number): void {
@@ -97,6 +108,22 @@ export class GameHUD {
 
     // Update text
     this.hpText.setText(`HP: ${Math.max(0, currentHp)}/${maxHp}`);
+  }
+
+  public updateLives(currentLives: number): void {
+    this.livesText.setText(`Lives: ${currentLives}`);
+
+    // Shake animation when lives are lost
+    if (currentLives >= 0) {
+      this.scene.tweens.add({
+        targets: this.livesText,
+        x: this.livesText.x + 5,
+        duration: 50,
+        yoyo: true,
+        repeat: 3,
+        ease: 'Power2'
+      });
+    }
   }
 
   public addCoins(amount: number): void {
