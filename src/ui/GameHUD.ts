@@ -7,6 +7,8 @@ export class GameHUD {
   private hpText!: Phaser.GameObjects.Text;
   private coinText!: Phaser.GameObjects.Text;
   private levelText!: Phaser.GameObjects.Text;
+  private livesText!: Phaser.GameObjects.Text;
+  private heartIcons: Phaser.GameObjects.Graphics[] = [];
 
   private coins: number = 0;
 
@@ -60,6 +62,51 @@ export class GameHUD {
     this.levelText.setOrigin(0.5, 0);
     this.levelText.setScrollFactor(0);
     this.levelText.setDepth(102);
+
+    // Lives counter
+    this.livesText = this.scene.add.text(20, 50, 'Lives:', {
+      font: '14px monospace',
+      color: '#ff6666',
+      stroke: '#000000',
+      strokeThickness: 3
+    });
+    this.livesText.setScrollFactor(0);
+    this.livesText.setDepth(102);
+
+    // Create heart icons for lives
+    for (let i = 0; i < 3; i++) {
+      const heart = this.createHeart(90 + i * 20, 56);
+      this.heartIcons.push(heart);
+    }
+  }
+
+  private createHeart(x: number, y: number): Phaser.GameObjects.Graphics {
+    const heart = this.scene.add.graphics();
+    heart.setScrollFactor(0);
+    heart.setDepth(102);
+
+    // Draw a simple heart shape
+    heart.fillStyle(0xff0000, 1);
+    heart.beginPath();
+
+    // Left curve
+    heart.arc(x - 3, y - 2, 4, Math.PI, 0, true);
+    // Right curve
+    heart.arc(x + 3, y - 2, 4, Math.PI, 0, true);
+    // Bottom point
+    heart.lineTo(x + 7, y + 2);
+    heart.lineTo(x, y + 8);
+    heart.lineTo(x - 7, y + 2);
+    heart.lineTo(x - 7, y - 2);
+
+    heart.closePath();
+    heart.fillPath();
+
+    // Add white outline
+    heart.lineStyle(1, 0xffffff, 0.8);
+    heart.strokePath();
+
+    return heart;
   }
 
   public updateHP(currentHp: number, maxHp: number): void {
@@ -97,6 +144,42 @@ export class GameHUD {
 
     // Update text
     this.hpText.setText(`HP: ${Math.max(0, currentHp)}/${maxHp}`);
+  }
+
+  public updateLives(currentLives: number): void {
+    // Update heart visibility - hide hearts for lost lives
+    this.heartIcons.forEach((heart, index) => {
+      if (index < currentLives) {
+        heart.setAlpha(1);
+      } else {
+        heart.setAlpha(0.2); // Dim lost hearts
+      }
+    });
+
+    // Red flash effect on all hearts when a life is lost
+    if (currentLives >= 0 && currentLives < 3) {
+      this.heartIcons.forEach(heart => {
+        // Flash red effect
+        this.scene.tweens.add({
+          targets: heart,
+          alpha: 0.3,
+          duration: 100,
+          yoyo: true,
+          repeat: 3,
+          ease: 'Power2'
+        });
+      });
+
+      // Shake animation on lives text
+      this.scene.tweens.add({
+        targets: this.livesText,
+        x: this.livesText.x + 5,
+        duration: 50,
+        yoyo: true,
+        repeat: 3,
+        ease: 'Power2'
+      });
+    }
   }
 
   public addCoins(amount: number): void {
