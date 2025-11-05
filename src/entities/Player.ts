@@ -27,7 +27,7 @@ export class Player {
   }
 
   private createAnimations(): void {
-    // Idle animations (4 directions)
+    // Idle animations (4 directions) - only 1 frame per direction
     this.scene.anims.create({
       key: 'knight_idle_down',
       frames: this.scene.anims.generateFrameNumbers('knight_idle', { start: 0, end: 0 }),
@@ -56,31 +56,32 @@ export class Player {
       repeat: -1
     });
 
-    // Walk animations (4 directions)
+    // Walk animations (4 directions) - only 1 frame per direction
+    // Since there's only 1 frame per direction, we'll use the same frame for walking
     this.scene.anims.create({
       key: 'knight_walk_down',
-      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 0, end: 3 }),
+      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 0, end: 0 }),
       frameRate: 8,
       repeat: -1
     });
 
     this.scene.anims.create({
       key: 'knight_walk_up',
-      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 4, end: 7 }),
+      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 1, end: 1 }),
       frameRate: 8,
       repeat: -1
     });
 
     this.scene.anims.create({
       key: 'knight_walk_right',
-      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 8, end: 11 }),
+      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 2, end: 2 }),
       frameRate: 8,
       repeat: -1
     });
 
     this.scene.anims.create({
       key: 'knight_walk_left',
-      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 12, end: 15 }),
+      frames: this.scene.anims.generateFrameNumbers('knight_walk', { start: 3, end: 3 }),
       frameRate: 8,
       repeat: -1
     });
