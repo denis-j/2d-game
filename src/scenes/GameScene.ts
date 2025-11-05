@@ -53,7 +53,6 @@ export class GameScene extends Phaser.Scene {
     this.hud = new GameHUD(this);
     this.hud.updateHP(this.player.getHp(), this.player.getMaxHp());
     this.hud.setLevel(Level5Data.levelNumber, Level5Data.name);
-    this.hud.showMessage('Willkommen im Dungeon!', 3000);
 
     // Setup input
     this.cursors = this.input.keyboard!.createCursorKeys();
