@@ -77,6 +77,12 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private loadObjectAssets(): void {
+    // GUI Assets
+    this.load.spritesheet('heart_counter', 'assets/GUI/HP_counters/animated/heart_counter-Sheet.png', {
+      frameWidth: 192,
+      frameHeight: 99
+    });
+
     // Coins (spritesheets with animations)
     this.load.spritesheet('bronze_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bronze coin.png', {
       frameWidth: 16,

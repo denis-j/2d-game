@@ -11,18 +11,14 @@ export class Player {
   private attackCooldown: number = 0;
   public lastDirection: { x: number; y: number } = { x: 0, y: -1 }; // Default facing up
 
-  // Lives system
-  private lives: number = 3;
-  private maxLives: number = 3;
+  // Lives system - 10 hits to die
+  private lives: number = 10;
+  private maxLives: number = 10;
   private isDead: boolean = false;
-  private isRespawning: boolean = false;
-  private spawnX: number;
-  private spawnY: number;
+  private invulnerableUntil: number = 0; // Invulnerability timer
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.scene = scene;
-    this.spawnX = x;
-    this.spawnY = y;
 
     // Create sprite with physics
     this.sprite = scene.physics.add.sprite(x, y, 'knight_idle');
@@ -97,10 +93,25 @@ export class Player {
     });
   }
 
-  public update(_time: number, delta: number, input: { left: boolean; right: boolean; up: boolean; down: boolean }): void {
+  public update(time: number, delta: number, input: { left: boolean; right: boolean; up: boolean; down: boolean }): void {
     // Update attack cooldown
     if (this.attackCooldown > 0) {
       this.attackCooldown -= delta;
+    }
+
+    // Update invulnerability timer
+    if (this.invulnerableUntil > time) {
+      // Flash effect during invulnerability
+      const flashInterval = 100;
+      if (Math.floor(time / flashInterval) % 2 === 0) {
+        this.sprite.setAlpha(0.5);
+      } else {
+        this.sprite.setAlpha(1);
+      }
+    } else if (this.invulnerableUntil > 0) {
+      // Invulnerability just ended
+      this.sprite.setAlpha(1);
+      this.invulnerableUntil = 0;
     }
 
     // Handle movement
@@ -233,12 +244,26 @@ export class Player {
   }
 
   public takeDamage(amount: number): void {
-    if (this.isDead || this.isRespawning) return;
+    if (this.isDead) return;
 
+    // Check invulnerability
+    const currentTime = this.scene.time.now;
+    if (this.invulnerableUntil > currentTime) return;
+
+    // Take one hit = lose one life
+    this.lives--;
+
+    // Set invulnerability for 1 second after taking damage
+    this.invulnerableUntil = currentTime + 1000;
+
+    // Also reduce HP for visual feedback on HP bar (optional)
     this.hp -= amount;
     if (this.hp < 0) {
       this.hp = 0;
     }
+
+    // Notify scene to update HUD
+    this.scene.events.emit('player-took-damage', this.lives);
 
     // Visual feedback - flash red
     this.sprite.setTint(0xff0000);
@@ -248,7 +273,8 @@ export class Player {
       }
     });
 
-    if (this.hp === 0) {
+    // Check if dead (no lives left)
+    if (this.lives <= 0) {
       this.die();
     }
   }
@@ -264,7 +290,6 @@ export class Player {
     if (this.isDead) return;
 
     this.isDead = true;
-    this.lives--;
 
     // Stop all movement
     this.sprite.setVelocity(0, 0);
@@ -277,66 +302,12 @@ export class Player {
       duration: 1000,
       ease: 'Power2',
       onComplete: () => {
-        if (this.lives > 0) {
-          // Respawn if lives remaining
-          this.scene.time.delayedCall(1000, () => {
-            this.respawn();
-          });
-        } else {
-          // Game Over
-          this.scene.events.emit('player-game-over');
-        }
+        // Game Over - no more lives
+        this.scene.events.emit('player-game-over');
       }
     });
   }
 
-  private respawn(): void {
-    this.isRespawning = true;
-
-    // Reset HP
-    this.hp = this.maxHp;
-
-    // Teleport to spawn
-    this.sprite.setPosition(this.spawnX, this.spawnY);
-    this.sprite.setAlpha(0);
-    this.sprite.setAngle(0);
-
-    // Fade in animation
-    this.scene.tweens.add({
-      targets: this.sprite,
-      alpha: 1,
-      duration: 1000,
-      ease: 'Power2',
-      onComplete: () => {
-        this.isDead = false;
-        this.isRespawning = false;
-      }
-    });
-
-    // Invulnerability flash effect for 3 seconds
-    let flashCount = 0;
-    const flashInterval = this.scene.time.addEvent({
-      delay: 200,
-      repeat: 14, // 3 seconds
-      callback: () => {
-        if (this.sprite && this.sprite.active) {
-          this.sprite.setAlpha(flashCount % 2 === 0 ? 0.5 : 1);
-          flashCount++;
-        }
-      }
-    });
-
-    // End invulnerability
-    this.scene.time.delayedCall(3000, () => {
-      if (this.sprite && this.sprite.active) {
-        this.sprite.setAlpha(1);
-      }
-      flashInterval.destroy();
-    });
-
-    // Notify scene
-    this.scene.events.emit('player-respawned');
-  }
 
   public getHp(): number {
     return this.hp;
