@@ -80,7 +80,11 @@ export class PreloadScene extends Phaser.Scene {
     // GUI Assets
     this.load.spritesheet('heart_counter', 'assets/GUI/HP_counters/animated/heart_counter-Sheet.png', {
       frameWidth: 192,
-      frameHeight: 99
+      frameHeight: 99.2
+    });
+
+    this.load.on('filecomplete-spritesheet-heart_counter', () => {
+      console.log('Heart counter spritesheet loaded successfully!');
     });
 
     // Coins (spritesheets with animations)

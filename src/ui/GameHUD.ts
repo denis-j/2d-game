@@ -8,6 +8,7 @@ export class GameHUD {
   private coinText!: Phaser.GameObjects.Text;
   private levelText!: Phaser.GameObjects.Text;
   private heartCounter!: Phaser.GameObjects.Sprite;
+  private livesText!: Phaser.GameObjects.Text;
 
   private coins: number = 0;
 
@@ -62,13 +63,29 @@ export class GameHUD {
     this.levelText.setScrollFactor(0);
     this.levelText.setDepth(102);
 
+    // Lives text (backup/debug)
+    this.livesText = this.scene.add.text(20, 50, 'Lives: 10', {
+      font: '16px monospace',
+      color: '#ff6666',
+      stroke: '#000000',
+      strokeThickness: 3
+    });
+    this.livesText.setScrollFactor(0);
+    this.livesText.setDepth(102);
+
     // Lives counter - using heart_counter sprite sheet
-    // The sprite has 10 frames, from 10 hearts (frame 0) to 0 hearts (frame 9)
-    this.heartCounter = this.scene.add.sprite(20, 80, 'heart_counter', 0);
-    this.heartCounter.setOrigin(0, 0);
+    // The sprite has 10 frames
+    // Position it to the right of the Lives text
+    this.heartCounter = this.scene.add.sprite(110, 58, 'heart_counter', 0);
+    this.heartCounter.setOrigin(0, 0.5); // Center vertically
     this.heartCounter.setScrollFactor(0);
     this.heartCounter.setDepth(102);
-    this.heartCounter.setScale(0.5); // Scale down to fit HUD
+    this.heartCounter.setScale(0.2); // Scale down to fit HUD nicely
+
+    console.log('Heart Counter created at:', this.heartCounter.x, this.heartCounter.y,
+                'Size:', this.heartCounter.width, 'x', this.heartCounter.height,
+                'Scaled:', this.heartCounter.displayWidth, 'x', this.heartCounter.displayHeight,
+                'Frame:', this.heartCounter.frame.name);
   }
 
   public updateHP(currentHp: number, maxHp: number): void {
@@ -109,11 +126,17 @@ export class GameHUD {
   }
 
   public updateLives(currentLives: number): void {
+    // Update text
+    this.livesText.setText(`Lives: ${currentLives}`);
+
     // Update heart counter sprite frame
-    // Frame 0 = 10 hearts, Frame 1 = 9 hearts, ..., Frame 9 = 1 heart, Frame 9+ = 0 hearts
-    // So: frame = 10 - currentLives
+    // Try reverse: Frame 0 = 0 hearts, Frame 9 = 10 hearts
+    // So: frame = currentLives - 1 (or just currentLives if 0-indexed from 0 hearts)
+    // Let's try: frame = 9 - (currentLives - 1) = 10 - currentLives
     const frameIndex = Math.max(0, Math.min(9, 10 - currentLives));
     this.heartCounter.setFrame(frameIndex);
+
+    console.log('Lives updated:', currentLives, 'Frame:', frameIndex);
 
     // Flash effect when taking damage
     if (currentLives >= 0 && currentLives < 10) {
