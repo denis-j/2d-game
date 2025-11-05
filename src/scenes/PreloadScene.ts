@@ -77,25 +77,61 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private loadObjectAssets(): void {
-    // Coins
-    this.load.image('bronze_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bronze coin.png');
-    this.load.image('silver_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Silver coin.png');
-    this.load.image('gold_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Gold coin.png');
+    // Coins (spritesheets with animations)
+    this.load.spritesheet('bronze_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bronze coin.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('silver_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Silver coin.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('gold_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Gold coin.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
 
-    // Keys
-    this.load.image('bronze_key', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bronze key.png');
-    this.load.image('silver_key', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Silver key.png');
-    this.load.image('gold_key', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Gold key.png');
+    // Keys (spritesheets)
+    this.load.spritesheet('bronze_key', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bronze key.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('silver_key', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Silver key.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('gold_key', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Gold key.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
 
-    // Potions
-    this.load.image('red_potion', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Red potion.png');
-    this.load.image('green_potion', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Green potion.png');
-    this.load.image('blue_potion', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Blue potion.png');
+    // Potions (spritesheets)
+    this.load.spritesheet('red_potion', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Red potion.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('green_potion', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Green potion.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('blue_potion', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Blue potion.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
 
-    // Chests
-    this.load.image('small_chest', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Small chest.png');
-    this.load.image('large_chest', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Large chest.png');
-    this.load.image('mimic_chest', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Mimic chest.png');
+    // Chests (spritesheets with open/close animations)
+    this.load.spritesheet('small_chest', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Small chest.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('large_chest', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Large chest.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('mimic_chest', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Mimic chest.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
 
     // Traps
     this.load.spritesheet('arrow_trap', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Arrow trap.png', {
@@ -123,8 +159,14 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16
     });
-    this.load.image('torch_front', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Torch (front).png');
-    this.load.image('torch_side', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Torch (side).png');
+    this.load.spritesheet('torch_front', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Torch (front).png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    this.load.spritesheet('torch_side', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Torch (side).png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
     this.load.image('sword', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Sword.png');
 
     // Bones and decorations

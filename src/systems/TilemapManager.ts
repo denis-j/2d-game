@@ -86,13 +86,15 @@ export class TilemapManager {
 
   private createDecoration(type: string, x: number, y: number): void {
     // Create decoration sprite
-    const decoration = this.scene.add.image(x, y, type);
+    const decoration = this.scene.add.sprite(x, y, type);
+    decoration.setFrame(0); // Show only first frame for spritesheets
     decoration.setDepth(5); // Above floor, below entities
   }
 
   private createItem(type: string, x: number, y: number): void {
     // Create item sprite
-    const item = this.scene.add.image(x, y, type);
+    const item = this.scene.add.sprite(x, y, type);
+    item.setFrame(0); // Show only first frame of spritesheet
     item.setDepth(6); // Above decorations, below entities
 
     // Add a subtle bounce animation to make items visible
