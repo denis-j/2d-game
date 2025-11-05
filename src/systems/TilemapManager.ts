@@ -52,6 +52,15 @@ export class TilemapManager {
         decoration.y * tileSize + tileSize / 2
       );
     });
+
+    // Create items
+    levelData.items.forEach(item => {
+      this.createItem(
+        item.type,
+        item.x * tileSize + tileSize / 2,
+        item.y * tileSize + tileSize / 2
+      );
+    });
   }
 
   private createFloorTile(x: number, y: number, size: number): void {
@@ -79,6 +88,22 @@ export class TilemapManager {
     // Create decoration sprite
     const decoration = this.scene.add.image(x, y, type);
     decoration.setDepth(5); // Above floor, below entities
+  }
+
+  private createItem(type: string, x: number, y: number): void {
+    // Create item sprite
+    const item = this.scene.add.image(x, y, type);
+    item.setDepth(6); // Above decorations, below entities
+
+    // Add a subtle bounce animation to make items visible
+    this.scene.tweens.add({
+      targets: item,
+      y: y - 2,
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
   }
 
   public getWallLayer(): Phaser.GameObjects.Group {

@@ -126,6 +126,12 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('torch_front', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Torch (front).png');
     this.load.image('torch_side', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Torch (side).png');
     this.load.image('sword', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Sword.png');
+
+    // Bones and decorations
+    this.load.image('Bones_1', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bones_1.png');
+    this.load.image('Bones_2', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bones_2.png');
+    this.load.image('Bones_3', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bones_3.png');
+    this.load.image('Chains', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Chains.png');
   }
 
   create(): void {
