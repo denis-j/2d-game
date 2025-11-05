@@ -73,7 +73,20 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private loadTilesetAssets(): void {
-    this.load.image('dungeon_tiles', 'assets/dungeon-tileset-asset-pack/1x/Dungeon Tileset.png');
+    // Load dungeon tileset as spritesheet for floor tiles
+    this.load.spritesheet('dungeon_tiles', 'assets/dungeon-tileset-asset-pack/1x/Dungeon Tileset.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    
+    // Load Level 1 map and tileset
+    this.load.json('level1_map', 'assets/dungeon-tileset-asset-pack/maps/level1/map.json');
+    this.load.spritesheet('level1_tiles', 'assets/dungeon-tileset-asset-pack/maps/level1/spritesheet.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    });
+    
+    console.log('📦 Loading Level 1 map and tiles');
   }
 
   private loadObjectAssets(): void {

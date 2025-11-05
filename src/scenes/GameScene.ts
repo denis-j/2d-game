@@ -19,6 +19,8 @@ export class GameScene extends Phaser.Scene {
   private tilemapManager!: TilemapManager;
   private enemies: Enemy[] = [];
   private hud!: GameHUD;
+  private coins: number = 0;
+  private keys: Set<string> = new Set(); // Track collected keys
 
   constructor() {
     super({ key: 'GameScene' });
@@ -28,12 +30,15 @@ export class GameScene extends Phaser.Scene {
     // Set background color
     this.cameras.main.setBackgroundColor('#1a1a1a');
 
+    // Load the JSON map data
+    const mapData = this.cache.json.get('level1_map');
+    
     // Create tilemap system
     this.tilemapManager = new TilemapManager(this);
-    this.tilemapManager.createLevel(Level5Data);
+    this.tilemapManager.createLevelFromJson(mapData, 'level1_tiles');
 
-    // Get player spawn position
-    const spawnPos = this.tilemapManager.getPlayerSpawnPosition(Level5Data);
+    // Get player spawn position (center of map)
+    const spawnPos = this.tilemapManager.getDefaultPlayerSpawn(mapData);
 
     // Create player at spawn position
     this.player = new Player(this, spawnPos.x, spawnPos.y);
@@ -41,19 +46,28 @@ export class GameScene extends Phaser.Scene {
     // Setup collision between player and walls
     this.physics.add.collider(this.player.sprite, this.tilemapManager.getWallLayer());
 
-    // Spawn enemies
-    this.spawnEnemies();
+    // Setup item collection (overlap, not collision - player can walk over them)
+    this.physics.add.overlap(
+      this.player.sprite,
+      this.tilemapManager.getItemsGroup(),
+      this.handleItemPickup,
+      undefined,
+      this
+    );
+
+    // Spawn enemies (disabled for now - map doesn't have enemy data yet)
+    // this.spawnEnemies();
 
     // Setup camera to follow player
     this.cameras.main.startFollow(this.player.sprite, true, 0.1, 0.1);
     this.cameras.main.setZoom(2.5); // Zoom in for pixel art
-    this.cameras.main.setBounds(0, 0, Level5Data.width * Level5Data.tileSize, Level5Data.height * Level5Data.tileSize);
+    this.cameras.main.setBounds(0, 0, mapData.mapWidth * mapData.tileSize, mapData.mapHeight * mapData.tileSize);
 
     // Create HUD
     this.hud = new GameHUD(this);
     this.hud.updateHP(this.player.getHp(), this.player.getMaxHp());
     this.hud.updateLives(this.player.getLives());
-    this.hud.setLevel(Level5Data.levelNumber, Level5Data.name);
+    this.hud.setLevel(1, 'Level 1');
 
     // Setup player events
     this.events.on('player-game-over', () => {
@@ -84,6 +98,59 @@ export class GameScene extends Phaser.Scene {
     spaceKey.on('down', () => {
       this.performPlayerAttack();
     });
+
+    // Dev Tool: Tileset Viewer (T key)
+    const tKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.T);
+    tKey.on('down', () => {
+      this.scene.pause('GameScene');
+      this.scene.launch('TilesetViewerScene');
+    });
+  }
+
+  private handleItemPickup(
+    playerSprite: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    itemSprite: Phaser.Types.Physics.Arcade.GameObjectWithBody
+  ): void {
+    const item = itemSprite as Phaser.GameObjects.Sprite;
+    const itemType = item.getData('itemType') as string;
+    
+    console.log('🎁 Item pickup triggered:', itemType);
+
+    // Handle different item types
+    if (itemType === 'bronze_coin' || itemType === 'silver_coin' || itemType === 'gold_coin') {
+      // Add coins
+      let coinValue = 1;
+      if (itemType === 'silver_coin') coinValue = 5;
+      if (itemType === 'gold_coin') coinValue = 10;
+      
+      this.coins += coinValue;
+      console.log(`💰 Collected ${itemType}! Total coins: ${this.coins}`);
+    } else if (itemType === 'red_potion' || itemType === 'blue_potion' || itemType === 'green_potion') {
+      // Heal player
+      const healAmount = 30;
+      this.player.heal(healAmount);
+      this.hud.updateHP(this.player.getHp(), this.player.getMaxHp());
+      console.log(`🧪 Collected ${itemType}! +${healAmount} HP`);
+    } else if (itemType === 'bronze_key' || itemType === 'silver_key' || itemType === 'gold_key') {
+      // Collect key
+      this.keys.add(itemType);
+      console.log(`🔑 Collected ${itemType}! Keys: ${Array.from(this.keys).join(', ')}`);
+    }
+
+    // Collect animation (fade out and scale down)
+    this.tweens.add({
+      targets: item,
+      alpha: 0,
+      scale: 0,
+      duration: 200,
+      ease: 'Power2',
+      onComplete: () => {
+        item.destroy();
+      }
+    });
+
+    // Play pickup sound (if available)
+    // this.sound.play('pickup');
   }
 
   private performPlayerAttack(): void {
@@ -177,6 +244,26 @@ export class GameScene extends Phaser.Scene {
 
     // Update player
     this.player.update(time, delta, { left, right, up, down });
+
+    // Check if player is at a locked door
+    if (this.player.sprite.body && (left || right || up || down)) {
+      const requiredKey = this.tilemapManager.getLockedDoorAt(
+        this.player.sprite.x,
+        this.player.sprite.y
+      );
+      
+      if (requiredKey) {
+        // Player is at a locked door
+        if (this.keys.has(requiredKey)) {
+          // Player has the key! Open the door
+          this.tilemapManager.tryOpenDoor(
+            this.player.sprite.x,
+            this.player.sprite.y,
+            requiredKey
+          );
+        }
+      }
+    }
 
     // Update enemies
     const playerPos = { x: this.player.sprite.x, y: this.player.sprite.y };

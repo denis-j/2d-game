@@ -24,6 +24,7 @@ export class Player {
     this.sprite = scene.physics.add.sprite(x, y, 'knight_idle');
     this.sprite.setSize(12, 14); // Adjust hitbox
     this.sprite.setOffset(2, 2);
+    this.sprite.setDepth(10); // Above decorations and items
 
     // Create animations
     this.createAnimations();
