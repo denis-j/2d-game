@@ -65,6 +65,11 @@ export class GameScene extends Phaser.Scene {
       this.hud.updateHP(this.player.getHp(), this.player.getMaxHp());
     });
 
+    this.events.on('player-took-damage', (lives: number) => {
+      this.hud.updateLives(lives);
+      this.hud.updateHP(this.player.getHp(), this.player.getMaxHp());
+    });
+
     // Setup input
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.wasdKeys = {

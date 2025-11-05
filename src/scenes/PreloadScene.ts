@@ -77,6 +77,34 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private loadObjectAssets(): void {
+    // GUI Assets
+    // Heart counter spritesheet: 192x992 px total
+    // According to asset pack guide: player bars animation sheets are 192x32px
+    // So: 992 ÷ 32 = 31 frames total (not 10!)
+    console.log('📦 Loading heart_counter spritesheet...');
+    this.load.spritesheet('heart_counter', 'assets/GUI/HP_counters/animated/heart_counter-Sheet.png', {
+      frameWidth: 192,
+      frameHeight: 32  // Correct frame height from asset pack specs
+    });
+
+    this.load.on('filecomplete-spritesheet-heart_counter', () => {
+      console.log('✅ Heart counter spritesheet loaded successfully!');
+      const texture = this.textures.get('heart_counter');
+      const frame = texture.get(0);
+      console.log('📊 Heart counter texture info:', {
+        key: texture.key,
+        frameTotal: texture.frameTotal,
+        frame0Width: frame ? frame.width : 'N/A',
+        frame0Height: frame ? frame.height : 'N/A'
+      });
+    });
+
+    this.load.on('loaderror', (file: Phaser.Loader.File) => {
+      if (file.key === 'heart_counter') {
+        console.error('❌ ERROR loading heart_counter spritesheet:', file.url);
+      }
+    });
+
     // Coins (spritesheets with animations)
     this.load.spritesheet('bronze_coin', 'assets/dungeon-tileset-asset-pack/1x/Objects and traps/Bronze coin.png', {
       frameWidth: 16,
