@@ -115,44 +115,46 @@ export class Player {
       velocityY *= 0.707;
     }
 
-    // Update last direction based on actual movement
-    if (velocityX !== 0 || velocityY !== 0) {
-      // Prioritize horizontal movement for animation direction
-      if (Math.abs(velocityX) > Math.abs(velocityY)) {
-        this.lastDirection = { x: velocityX > 0 ? 1 : -1, y: 0 };
-      } else {
-        this.lastDirection = { x: 0, y: velocityY > 0 ? 1 : -1 };
-      }
-    }
-
     // Set velocity
     this.sprite.setVelocity(velocityX, velocityY);
 
-    // Update animation
-    if (!this.isAttacking) {
-      if (velocityX === 0 && velocityY === 0) {
-        // Idle - use last direction
-        if (this.lastDirection.x < 0) {
-          this.sprite.play('knight_idle_left', true);
-        } else if (this.lastDirection.x > 0) {
-          this.sprite.play('knight_idle_right', true);
-        } else if (this.lastDirection.y < 0) {
-          this.sprite.play('knight_idle_up', true);
-        } else {
-          this.sprite.play('knight_idle_down', true);
-        }
-      } else {
-        // Walking - use actual current direction
-        if (this.lastDirection.x < 0) {
-          this.sprite.play('knight_walk_left', true);
-        } else if (this.lastDirection.x > 0) {
-          this.sprite.play('knight_walk_right', true);
-        } else if (this.lastDirection.y < 0) {
-          this.sprite.play('knight_walk_up', true);
-        } else {
-          this.sprite.play('knight_walk_down', true);
-        }
+    // Determine animation direction
+    let animDirection = '';
+    const isMoving = velocityX !== 0 || velocityY !== 0;
+
+    if (isMoving) {
+      // Update last direction based on actual movement
+      // Prioritize horizontal over vertical for diagonal movement
+      if (velocityX < 0 && Math.abs(velocityX) >= Math.abs(velocityY)) {
+        animDirection = 'left';
+        this.lastDirection = { x: -1, y: 0 };
+      } else if (velocityX > 0 && Math.abs(velocityX) >= Math.abs(velocityY)) {
+        animDirection = 'right';
+        this.lastDirection = { x: 1, y: 0 };
+      } else if (velocityY < 0) {
+        animDirection = 'up';
+        this.lastDirection = { x: 0, y: -1 };
+      } else if (velocityY > 0) {
+        animDirection = 'down';
+        this.lastDirection = { x: 0, y: 1 };
       }
+    } else {
+      // Not moving, use last direction for idle
+      if (this.lastDirection.x < 0) {
+        animDirection = 'left';
+      } else if (this.lastDirection.x > 0) {
+        animDirection = 'right';
+      } else if (this.lastDirection.y < 0) {
+        animDirection = 'up';
+      } else {
+        animDirection = 'down';
+      }
+    }
+
+    // Update animation
+    if (!this.isAttacking && animDirection) {
+      const animKey = isMoving ? `knight_walk_${animDirection}` : `knight_idle_${animDirection}`;
+      this.sprite.play(animKey, true);
     }
   }
 
