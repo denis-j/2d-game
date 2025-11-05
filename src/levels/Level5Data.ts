@@ -114,7 +114,7 @@ export const Level5Data = {
 
   // Decorations - torches, bones, chains, etc.
   decorations: [
-    // Torches along walls - front torches on horizontal walls
+    // Torches along top wall (torch_front below wall at y=0)
     { type: 'torch_front', x: 2, y: 1 },
     { type: 'torch_front', x: 8, y: 1 },
     { type: 'torch_front', x: 16, y: 1 },
@@ -123,38 +123,47 @@ export const Level5Data = {
     { type: 'torch_front', x: 42, y: 1 },
     { type: 'torch_front', x: 48, y: 1 },
 
-    { type: 'torch_front', x: 2, y: 33 },
-    { type: 'torch_front', x: 12, y: 33 },
-    { type: 'torch_front', x: 25, y: 33 },
-    { type: 'torch_front', x: 38, y: 33 },
-    { type: 'torch_front', x: 48, y: 33 },
+    // Torches along bottom wall (torch_front above wall at y=44)
+    { type: 'torch_front', x: 2, y: 43 },
+    { type: 'torch_front', x: 12, y: 43 },
+    { type: 'torch_front', x: 25, y: 43 },
+    { type: 'torch_front', x: 38, y: 43 },
+    { type: 'torch_front', x: 48, y: 43 },
 
-    // Torches on side walls
+    // Torches on left wall (torch_side right of wall at x=0)
     { type: 'torch_side', x: 1, y: 5 },
     { type: 'torch_side', x: 1, y: 12 },
     { type: 'torch_side', x: 1, y: 20 },
     { type: 'torch_side', x: 1, y: 28 },
+    { type: 'torch_side', x: 1, y: 35 },
 
-    { type: 'torch_side', x: 49, y: 5 },
-    { type: 'torch_side', x: 49, y: 12 },
-    { type: 'torch_side', x: 49, y: 20 },
-    { type: 'torch_side', x: 49, y: 28 },
+    // Torches on right wall (torch_side left of wall at x=49)
+    { type: 'torch_side', x: 48, y: 5 },
+    { type: 'torch_side', x: 48, y: 12 },
+    { type: 'torch_side', x: 48, y: 20 },
+    { type: 'torch_side', x: 48, y: 28 },
+    { type: 'torch_side', x: 48, y: 35 },
 
-    // Torches in rooms
-    { type: 'torch_side', x: 4, y: 5 },
-    { type: 'torch_side', x: 4, y: 14 },
-    { type: 'torch_side', x: 12, y: 5 },
-    { type: 'torch_side', x: 12, y: 14 },
+    // Torches on internal walls (adjacent to wall structures)
+    // Left room structure - walls at x=3
+    { type: 'torch_side', x: 2, y: 4 },
+    { type: 'torch_side', x: 2, y: 6 },
 
-    { type: 'torch_side', x: 20, y: 5 },
-    { type: 'torch_side', x: 20, y: 14 },
-    { type: 'torch_side', x: 30, y: 5 },
-    { type: 'torch_side', x: 30, y: 14 },
+    // Right side of left room walls at x=7
+    { type: 'torch_side', x: 8, y: 4 },
+    { type: 'torch_side', x: 8, y: 6 },
 
-    { type: 'torch_side', x: 38, y: 5 },
-    { type: 'torch_side', x: 38, y: 14 },
-    { type: 'torch_side', x: 46, y: 5 },
-    { type: 'torch_side', x: 46, y: 14 },
+    // Internal vertical walls at x=15
+    { type: 'torch_side', x: 14, y: 2 },
+    { type: 'torch_side', x: 16, y: 2 },
+
+    // Internal vertical walls at x=33
+    { type: 'torch_side', x: 32, y: 2 },
+    { type: 'torch_side', x: 34, y: 2 },
+
+    // Right room structure - walls at x=37, x=41
+    { type: 'torch_side', x: 36, y: 4 },
+    { type: 'torch_side', x: 42, y: 4 },
 
     // Bones on the floor - various positions
     { type: 'Bones_1', x: 6, y: 9 },

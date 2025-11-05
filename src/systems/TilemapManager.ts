@@ -87,8 +87,26 @@ export class TilemapManager {
   private createDecoration(type: string, x: number, y: number): void {
     // Create decoration sprite
     const decoration = this.scene.add.sprite(x, y, type);
-    decoration.setFrame(0); // Show only first frame for spritesheets
     decoration.setDepth(5); // Above floor, below entities
+
+    // Add animations for torches
+    if (type === 'torch_front' || type === 'torch_side') {
+      // Create animation if it doesn't exist
+      const animKey = `${type}_anim`;
+      if (!this.scene.anims.exists(animKey)) {
+        this.scene.anims.create({
+          key: animKey,
+          frames: this.scene.anims.generateFrameNumbers(type, { start: 0, end: 3 }),
+          frameRate: 8,
+          repeat: -1
+        });
+      }
+      // Play the animation
+      decoration.play(animKey);
+    } else {
+      // For non-animated decorations, show first frame
+      decoration.setFrame(0);
+    }
   }
 
   private createItem(type: string, x: number, y: number): void {
